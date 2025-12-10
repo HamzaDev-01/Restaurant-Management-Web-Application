@@ -14,7 +14,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($username == $admin_username && $password == $admin_password) {
         // Authentication successful
         $_SESSION['admin_logged_in'] = true; // Set session variable for logged-in status
-        header("Location: dashboard.php"); // Redirect to dashboard page
+        echo "<script>
+                sessionStorage.setItem('admin_logged_in', 'true');
+                alert('Login successful!');
+                window.location.href='index.html#dashboard'; // Redirect to dashboard
+              </script>";
         exit();
     } else {
         // if Authentication failed
