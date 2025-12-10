@@ -2,8 +2,8 @@
 session_start();
 
 // Hardcoded admin credentials
-$admin_username = "admin";
-$admin_password = "administrator";
+$admin_username = "Hamza Hussain";
+$admin_password = "123456789";
 
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
