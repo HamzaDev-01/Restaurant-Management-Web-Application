@@ -12,7 +12,7 @@ if ($conn->connect_error) {
 }
 
 // Query to fetch order history
-$sql = "SELECT o.order_id, o.customer_name, oi.menu_item_name AS item_name, oi.price AS item_price, o.order_date 
+$sql = "SELECT o.order_id, o.customer_name, o.email, o.address, o.phone_number, oi.menu_item_name AS item_name, oi.price AS item_price, o.order_date
         FROM orders o
         JOIN order_items oi ON o.order_id = oi.order_id
         ORDER BY o.order_date DESC";

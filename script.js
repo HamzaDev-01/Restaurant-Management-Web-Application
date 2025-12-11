@@ -177,6 +177,24 @@ function saveCustomerName() {
     localStorage.setItem('customerName', customerName);
 }
 
+// Save customer email
+function saveCustomerEmail() {
+    const customerEmail = document.getElementById('customerEmail').value;
+    localStorage.setItem('customerEmail', customerEmail);
+}
+
+// Save customer address
+function saveCustomerAddress() {
+    const customerAddress = document.getElementById('customerAddress').value;
+    localStorage.setItem('customerAddress', customerAddress);
+}
+
+// Save customer phone
+function saveCustomerPhone() {
+    const customerPhone = document.getElementById('customerPhone').value;
+    localStorage.setItem('customerPhone', customerPhone);
+}
+
 // Load cart on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateCart();

@@ -13,6 +13,9 @@ if ($conn->connect_error) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $customerName = $conn->real_escape_string($_POST['customerName']);
+    $customerEmail = $conn->real_escape_string($_POST['customerEmail']);
+    $customerAddress = $conn->real_escape_string($_POST['customerAddress']);
+    $customerPhone = $conn->real_escape_string($_POST['customerPhone']);
     $totalPrice = 0;
 
     if (isset($_POST['cart']) && is_array($_POST['cart'])) {
@@ -25,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Insert order into `orders` table
-        $conn->query("INSERT INTO orders (customer_name, total_price) VALUES ('$customerName', $totalPrice)");
+        $conn->query("INSERT INTO orders (customer_name, email, address, phone_number, total_price) VALUES ('$customerName', '$customerEmail', '$customerAddress', '$customerPhone', $totalPrice)");
         $orderId = $conn->insert_id;
 
         // Insert items into `order_items` table

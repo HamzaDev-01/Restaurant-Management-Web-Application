@@ -155,19 +155,31 @@
             <!-- Cart Summary Section -->
             <form id="orderForm" method="POST" action="save_order.php" style="margin-top: 40px; padding: 20px; background-color: #f7f7f7; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
                 <h3 style="font-size: 1.8rem; font-weight: bold; color: #333;">Your Cart</h3>
-                
+
                 <!-- Customer Name Input -->
                 <label for="customerName" style="font-size: 1.2rem; color: #555; display: block; margin-bottom: 10px;">Customer Name:</label>
-                <input type="text" id="customerName" name="customerName" placeholder="Enter your name" style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;" oninput="saveCustomerName()">
-                
+                <input type="text" id="customerName" name="customerName" placeholder="Enter your name" required style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;" oninput="saveCustomerName()">
+
+                <!-- Customer Email Input -->
+                <label for="customerEmail" style="font-size: 1.2rem; color: #555; display: block; margin-bottom: 10px;">Email:</label>
+                <input type="email" id="customerEmail" name="customerEmail" placeholder="Enter your email" required style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;" oninput="saveCustomerEmail()">
+
+                <!-- Customer Address Input -->
+                <label for="customerAddress" style="font-size: 1.2rem; color: #555; display: block; margin-bottom: 10px;">Address:</label>
+                <textarea id="customerAddress" name="customerAddress" placeholder="Enter your delivery address" required style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; min-height: 80px; resize: vertical;" oninput="saveCustomerAddress()"></textarea>
+
+                <!-- Customer Phone Number Input -->
+                <label for="customerPhone" style="font-size: 1.2rem; color: #555; display: block; margin-bottom: 10px;">Phone Number:</label>
+                <input type="tel" id="customerPhone" name="customerPhone" placeholder="Enter your phone number" required style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;" oninput="saveCustomerPhone()">
+
                 <!-- Cart Items -->
                 <div id="cartItems" style="margin-top: 20px;"></div>
-                
+
                 <!-- Cart Total -->
                 <div id="cartTotal" style="font-size: 1.5rem; font-weight: bold; color: #333; margin-top: 15px;">Total: $0.00</div>
-            
+
                 <div id="hiddenCartInputs"></div>
-            
+
                 <button type="submit" style="background: #FF5733; color: white; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; width: 100%;">Place Order</button>
             </form>
         </div>
@@ -175,11 +187,26 @@
         <script>
             // Initialize page when DOM is ready
             document.addEventListener('DOMContentLoaded', function() {
-                // Initialize customer name field from localStorage
+                // Initialize customer fields from localStorage
                 customerName = localStorage.getItem('customerName') || '';
                 const nameInput = document.getElementById('customerName');
                 if (nameInput) {
                     nameInput.value = customerName;
+                }
+
+                const emailInput = document.getElementById('customerEmail');
+                if (emailInput) {
+                    emailInput.value = localStorage.getItem('customerEmail') || '';
+                }
+
+                const addressInput = document.getElementById('customerAddress');
+                if (addressInput) {
+                    addressInput.value = localStorage.getItem('customerAddress') || '';
+                }
+
+                const phoneInput = document.getElementById('customerPhone');
+                if (phoneInput) {
+                    phoneInput.value = localStorage.getItem('customerPhone') || '';
                 }
 
                 // Fetch menu items and add them into the page
@@ -223,13 +250,19 @@
 
                         // After order is placed, clear localStorage and reset the form
                         setTimeout(() => {
-                            // Clear the cart and customer name from localStorage
+                            // Clear the cart and customer info from localStorage
                             localStorage.removeItem('cart');
                             localStorage.removeItem('customerName');
+                            localStorage.removeItem('customerEmail');
+                            localStorage.removeItem('customerAddress');
+                            localStorage.removeItem('customerPhone');
 
-                            // Reset the cart display and customer name input
+                            // Reset the cart display and customer input fields
                             cart = [];
                             document.getElementById('customerName').value = '';
+                            document.getElementById('customerEmail').value = '';
+                            document.getElementById('customerAddress').value = '';
+                            document.getElementById('customerPhone').value = '';
                             updateCart();
                         }, 500);
                     });
@@ -617,6 +650,9 @@
                                 ordersMap[item.order_id] = {
                                     order_id: item.order_id,
                                     customer_name: item.customer_name,
+                                    email: item.email,
+                                    address: item.address,
+                                    phone_number: item.phone_number,
                                     order_date: item.order_date,
                                     items: []
                                 };
@@ -632,12 +668,15 @@
                         html += '<tr style="border-bottom: 2px solid #ff6f61;">';
                         html += '<th style="padding: 12px; text-align: left; color: #333;">Order ID</th>';
                         html += '<th style="padding: 12px; text-align: left; color: #333;">Customer</th>';
+                        html += '<th style="padding: 12px; text-align: left; color: #333;">Email</th>';
+                        html += '<th style="padding: 12px; text-align: left; color: #333;">Address</th>';
+                        html += '<th style="padding: 12px; text-align: left; color: #333;">Phone</th>';
                         html += '<th style="padding: 12px; text-align: left; color: #333;">Items</th>';
                         html += '<th style="padding: 12px; text-align: left; color: #333;">Date</th>';
                         html += '</tr>';
                         html += '</thead>';
                         html += '<tbody>';
-                        
+
                         Object.values(ordersMap).forEach(order => {
                             const itemsList = order.items.map(item => `${item.name} ($${parseFloat(item.price).toFixed(2)})`).join(', ');
                             const orderDate = new Date(order.order_date).toLocaleDateString('en-US', {
@@ -647,10 +686,13 @@
                                 hour: '2-digit',
                                 minute: '2-digit'
                             });
-                            
+
                             html += '<tr style="border-bottom: 1px solid #eee;">';
                             html += `<td style="padding: 12px; color: #333;">#${order.order_id}</td>`;
                             html += `<td style="padding: 12px; color: #333;">${order.customer_name}</td>`;
+                            html += `<td style="padding: 12px; color: #666;">${order.email}</td>`;
+                            html += `<td style="padding: 12px; color: #666;">${order.address}</td>`;
+                            html += `<td style="padding: 12px; color: #666;">${order.phone_number}</td>`;
                             html += `<td style="padding: 12px; color: #666;">${itemsList}</td>`;
                             html += `<td style="padding: 12px; color: #666;">${orderDate}</td>`;
                             html += '</tr>';

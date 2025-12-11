@@ -39,6 +39,9 @@ if (!$conn->query($createMenuSql)) {
 $createOrdersSql = "CREATE TABLE orders (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    address TEXT NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
     total_price DECIMAL(10, 2) NOT NULL,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
