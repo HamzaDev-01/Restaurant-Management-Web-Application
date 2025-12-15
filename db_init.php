@@ -43,7 +43,11 @@ $createOrdersSql = "CREATE TABLE orders (
     address TEXT NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
     total_price DECIMAL(10, 2) NOT NULL,
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    delivery_status ENUM('pending', 'confirmed', 'delivered') DEFAULT 'pending',
+    rider_name VARCHAR(100),
+    confirmation_date TIMESTAMP NULL,
+    delivery_date TIMESTAMP NULL
 )";
 
 if (!$conn->query($createOrdersSql)) {

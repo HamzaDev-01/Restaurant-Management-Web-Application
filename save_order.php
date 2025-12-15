@@ -1,15 +1,7 @@
 <?php
+require_once 'db_config.php';
 
-$servername = "localhost";
-$username = "root"; 
-$password = ""; 
-$dbname = "restaurant_db_temp"; 
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+$conn = getDatabaseConnection();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $customerName = $conn->real_escape_string($_POST['customerName']);
@@ -39,9 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn->query("INSERT INTO order_items (order_id, menu_item_name, price, quantity) VALUES ($orderId, '$itemName', $price, $quantity)");
         }
 
-        echo "Order placed successfully! Order ID: $orderId";
+        // Return success with order tracking information
+        echo json_encode([
+            'success' => true,
+            'message' => 'Order placed successfully!',
+            'order_id' => $orderId,
+            'track_url' => "track_order.php?order_id=$orderId"
+        ]);
     } else {
-        echo "No cart items were submitted.";
+        echo json_encode(['success' => false, 'message' => 'No cart items were submitted.']);
     }
 } else {
     echo "Invalid request.";

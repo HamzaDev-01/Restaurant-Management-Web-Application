@@ -1,14 +1,7 @@
 <?php
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$dbname = 'restaurant_db_temp';
+require_once 'db_config.php';
 
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+$conn = getDatabaseConnection();
 
 // Update with working image URLs
 $updates = [

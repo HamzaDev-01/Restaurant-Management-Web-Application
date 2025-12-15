@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -l:*)",
+      "Bash(php migrate_delivery_columns.php:*)",
+      "Bash(php check_db_structure.php:*)"
+    ]
+  }
+}

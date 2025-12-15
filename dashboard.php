@@ -1,16 +1,7 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "restaurant_db";
+require_once 'db_config.php';
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+$conn = getDatabaseConnection();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -135,6 +126,8 @@ $conn->close();
             <th style="padding: 10px; border: 1px solid #ddd;">Customer Name</th>
             <th style="padding: 10px; border: 1px solid #ddd;">Menu Item</th>
             <th style="padding: 10px; border: 1px solid #ddd;">Price</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Delivery Status</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Rider</th>
             <th style="padding: 10px; border: 1px solid #ddd;">Date</th>
         </tr>
     </thead>
@@ -151,16 +144,28 @@ $conn->close();
             .then(data => {
                 const orderHistoryContainer = document.getElementById('order-history');
                 if (data.length === 0) {
-                    orderHistoryContainer.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 10px;">No orders found</td></tr>';
+                    orderHistoryContainer.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 10px;">No orders found</td></tr>';
                     return;
                 }
                 data.forEach(order => {
                     const row = document.createElement('tr');
+
+                    // Determine status badge color
+                    let statusColor = '#ffc107'; // pending - yellow
+                    if (order.delivery_status === 'confirmed') statusColor = '#ff9800'; // orange
+                    if (order.delivery_status === 'delivered') statusColor = '#28a745'; // green
+
                     row.innerHTML = `
                         <td style="padding: 10px; border: 1px solid #ddd;">${order.order_id}</td>
                         <td style="padding: 10px; border: 1px solid #ddd;">${order.customer_name}</td>
                         <td style="padding: 10px; border: 1px solid #ddd;">${order.item_name}</td>
                         <td style="padding: 10px; border: 1px solid #ddd;">$${order.item_price}</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">
+                            <span style="background: ${statusColor}; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.85em; font-weight: bold;">
+                                ${order.delivery_status || 'pending'}
+                            </span>
+                        </td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">${order.rider_name || '-'}</td>
                         <td style="padding: 10px; border: 1px solid #ddd;">${new Date(order.order_date).toLocaleDateString()}</td>
                     `;
                     orderHistoryContainer.appendChild(row);

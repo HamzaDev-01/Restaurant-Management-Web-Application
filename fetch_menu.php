@@ -1,15 +1,7 @@
 <?php
+require_once 'db_config.php';
 
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$dbname = 'restaurant_db_temp';
-
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+$conn = getDatabaseConnection();
 
 $sql = "SELECT * FROM menu_items";
 $result = $conn->query($sql);

@@ -1,16 +1,8 @@
 <?php
 // Migration script to add email, address, and phone_number columns to orders table
+require_once 'db_config.php';
 
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$dbname = 'restaurant_db_temp';
-
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+$conn = getDatabaseConnection();
 
 // Add email column if it doesn't exist
 $result = $conn->query("SHOW COLUMNS FROM orders LIKE 'email'");
